@@ -5,12 +5,14 @@
 **Вызов виджета**
 
 ```php
-<?php $this->widget('application.modules.countdown.widgets.CountdownWidget.CountdownWidget', [
+<?php
+$this->widget('application.modules.countdown.widgets.CountdownWidget.CountdownWidget',[
     'options'=>[
         'size'=>"md", // lg, md, sm, xs
         'beforeDateTime'=> '5/01/2016 00:00:01'
     ]
-]) ?>
+]);
+?>
 ```
 
 **Параметры**
