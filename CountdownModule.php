@@ -2,7 +2,11 @@
 use yupe\components\WebModule;
 class CountdownModule extends WebModule
 {
-	const VERSION = '0.1';
+	const VERSION = '0.2';
+
+	public $widgets = [
+		'CountdownWidget'=>'CountdownWidget',
+	];
 
 	public function getVersion()
 	{
@@ -36,12 +40,17 @@ class CountdownModule extends WebModule
 
 	public function getAdminPageLink()
 	{
-		return '/countdown/coundownBackend/index';
+		return '/countdown/countdownBackend/index';
 	}
 
 	public function getIcon()
 	{
 		return "fa fa-clock-o";
+	}
+
+	public function getWidgets()
+	{
+		return $this->widgets;
 	}
 
 	public function init()

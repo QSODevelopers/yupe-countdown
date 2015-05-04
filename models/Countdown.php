@@ -6,10 +6,23 @@
  * The followings are the available columns in table '{{countdown_countdown}}':
  * @property integer $id
  * @property string $name
+ * @property integer $status
  * @property string $settings
  */
-class Countdown extends CActiveRecord
+class Countdown extends yupe\models\YModel
 {
+	/**
+	 *
+	 */
+	const STATUS_BLOCKED = 0;
+	/**
+	 *
+	 */
+	const STATUS_ACTIVE = 1;
+	/**
+	 *
+	 */
+	const STATUS_DELETED = 2;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -25,13 +38,15 @@ class Countdown extends CActiveRecord
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
-		return array(
-			array('name', 'length', 'max'=>255),
-			array('settings', 'safe'),
+		return [
+			['status', 'numerical', 'integerOnly'=>true],
+			['title, widget', 'length', 'max'=>255],
+			['settings', 'safe'],
+			['status', 'in', 'range' => array_keys($this->getStatusList())],
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, settings', 'safe', 'on'=>'search'),
-		);
+			['id, title, status, settings', 'safe', 'on'=>'search'],
+		];
 	}
 
 	/**
@@ -51,9 +66,22 @@ class Countdown extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'name' => 'Name',
-			'settings' => 'Settings',
+			'id'       => Yii::t('CountdownModule.countdown', 'ID'),
+			'title'    => Yii::t('CountdownModule.countdown', 'Title'),
+			'status'   => Yii::t('CountdownModule.countdown', 'Status'),
+			'settings' => Yii::t('CountdownModule.countdown', 'Settings'),
+			'widget'   => Yii::t('CountdownModule.countdown', 'Widget'),
+		);
+	}
+
+	public function attributeDescriptions()
+	{
+		return array(
+			'id'       => Yii::t('CountdownModule.countdown', 'ID'),
+			'title'    => Yii::t('CountdownModule.countdown', 'Title'),
+			'status'   => Yii::t('CountdownModule.countdown', 'Status'),
+			'settings' => Yii::t('CountdownModule.countdown', 'Settings'),
+			'widget'   => Yii::t('CountdownModule.countdown', 'Widget'),
 		);
 	}
 
@@ -76,19 +104,41 @@ class Countdown extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('title',$this->title,true);
+		$criteria->compare('status',$this->status);
 		$criteria->compare('settings',$this->settings,true);
+		$criteria->compare('widget',$this->widget,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
 
+	public function beforeSave()
+	{
+		$this->settings = CJSON::encode($_POST["Settings"]);
+		return parent::beforeSave();
+	}
+
+	public function getStatusList()
+	{
+		return [
+			self::STATUS_BLOCKED => Yii::t('CountdownModule.countdown', 'Blocked'),
+			self::STATUS_ACTIVE  => Yii::t('CountdownModule.countdown', 'Active'),
+			self::STATUS_DELETED => Yii::t('CountdownModule.countdown', 'Removed'),
+		];
+	}
+
+	public function getWidgets()
+	{
+		return Yii::app()->getModule('countdown')->getWidgets();
+	}
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Countdown the static model class
+	 * @return CountdownModule the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

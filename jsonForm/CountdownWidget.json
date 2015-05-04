@@ -1,0 +1,32 @@
+{
+    "name": "CountdownWidget",
+    "settings": [
+        {
+            "variable" : "beforeDateTime",
+            "name"     : "beforeDateTime"
+        },
+        {
+            "variable" : "size",
+            "name"     : "size",
+            "type"     : "dropDown",
+            "options": [
+                {
+                    "name": "Large",
+                    "value": "lg"
+                },
+                {
+                    "name": "Middle",
+                    "value": "md"
+                },
+                {
+                    "name": "Small",
+                    "value": "sm"
+                },
+                {
+                    "name": "Extra small",
+                    "value": "xs"
+                }
+            ]
+        }
+    ]
+}

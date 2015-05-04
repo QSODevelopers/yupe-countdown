@@ -4,7 +4,11 @@ return [
         'class' => 'application.modules.countdown.CountdownModule',
     ],
     'import'    => [],
-    'component' => [],
+    'component' => [
+        'jsonSettingsManager' => [
+            'class' => 'application.modules.countdown.components.SettingsJSON'
+        ],
+    ],
     'rules'     => [],
 ];
  ?>
